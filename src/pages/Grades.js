@@ -28,13 +28,18 @@ const Grades = () => {
 
   const loadGrades = async () => {
     try {
+      let data = [];
       if (user.role === 'student') {
-        const data = await mockApi.grades.getByStudent(user.id);
-        setGrades(data);
-        
+        // Фақат баҳояи студенти худ
+        data = await mockApi.grades.getByStudent(user.id);
         const perf = await mockApi.statistics.getStudentPerformance(user.id);
         setPerformance(perf);
+      } else if (['admin', 'rector', 'dekan'].includes(user.role)) {
+        // Ҳамаи студентҳо ва баҳояшон
+        data = await mockApi.grades.getAllStudents();
+        setPerformance(null);
       }
+      setGrades(data);
     } catch (error) {
       console.error('Хатогӣ:', error);
     }
@@ -56,6 +61,8 @@ const Grades = () => {
     return labels[type] || type;
   };
 
+  const isAdminView = ['admin', 'rector', 'dekan'].includes(user.role);
+
   return (
     <Box>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
@@ -65,7 +72,8 @@ const Grades = () => {
         </Typography>
       </Box>
 
-      {performance && (
+      {/* Муҳофизати муваффақият барои студенти танҳо */}
+      {!isAdminView && performance && (
         <Card sx={{ mb: 3 }}>
           <CardContent>
             <Typography variant="h6" fontWeight={600} gutterBottom>
@@ -107,6 +115,9 @@ const Grades = () => {
         <Table>
           <TableHead>
             <TableRow sx={{ bgcolor: 'primary.light' }}>
+              {isAdminView && (
+                <TableCell sx={{ color: 'white', fontWeight: 700 }}>Студент</TableCell>
+              )}
               <TableCell sx={{ color: 'white', fontWeight: 700 }}>Фан</TableCell>
               <TableCell sx={{ color: 'white', fontWeight: 700 }}>Намуди баҳо</TableCell>
               <TableCell sx={{ color: 'white', fontWeight: 700 }} align="center">Баҳо</TableCell>
@@ -116,6 +127,13 @@ const Grades = () => {
           <TableBody>
             {grades.map((grade) => (
               <TableRow key={grade.id} hover>
+                {isAdminView && (
+                  <TableCell>
+                    <Typography variant="body1" fontWeight={600}>
+                      {grade.student?.name}
+                    </Typography>
+                  </TableCell>
+                )}
                 <TableCell>
                   <Typography variant="body1" fontWeight={600}>
                     {grade.subject?.name}

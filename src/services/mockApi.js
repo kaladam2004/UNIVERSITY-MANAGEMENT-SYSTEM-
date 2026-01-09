@@ -16,7 +16,7 @@ import {
   exams,
   announcements,
   universityStats
-} from './mockData';
+} from '../data/mockData'; 
 
 // Функсияи кумакӣ барои симулятсияи таъхир (network latency)
 const delay = (ms = 300) => new Promise(resolve => setTimeout(resolve, ms));
