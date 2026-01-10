@@ -10,7 +10,7 @@ export const users = [
     login: "rector",
     password: "rector123",
     role: "rector",
-    fullName: "Раҳимзода Фарҳод Неъматович",
+    fullName: "Насриддинзода Эмомали",
     email: "rector@tnu.tj",
     phone: "+992 918 123 456",
     avatar: null,
